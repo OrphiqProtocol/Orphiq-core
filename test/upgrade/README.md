@@ -1,8 +1,8 @@
-# Oasis Upgrade Tests
+# Orphiq Upgrade Tests
 
-Oasis Upgrade Tests can be used to test seamless and dump/restore network
+Orphiq Upgrade Tests can be used to test seamless and dump/restore network
 upgrades. The testing process involves taking an old and a new version
-of the Oasis Core library, building binaries (such as oasis-node, runtimes,
+of the Orphiq Core library, building binaries (such as Orphiq-node, runtimes,
 keymanager, etc.), and using them to run upgrade tests.
 
 Each upgrade test consists of two parts: the pre-upgrade scenario and
@@ -19,7 +19,7 @@ propose an upgrade proposal, vote for it, and wait for the network to halt.
 It would then wipe the consensus state, keeping only the necessary runtime data,
 key manager data, and runtime bundles required for the post-upgrade scenario.
 
-Pre-upgrade scenarios rely on the code from the old version of the Oasis Core
+Pre-upgrade scenarios rely on the code from the old version of the Orphiq Core
 library and are executed using binaries compiled from the same version.
 
 ## Post-upgrade scenario
@@ -34,7 +34,7 @@ For example, in a dump/restore upgrade test, a post-upgrade scenario would
 take the exported genesis file, make any necessary fixes, and use it to start
 the network with the old runtime bundles.
 
-Post-upgrade scenarios rely on the code from the new version of the Oasis Core
+Post-upgrade scenarios rely on the code from the new version of the Orphiq Core
 library and are executed using binaries compiled from the same version. However,
 the scenario can still use the old runtime binaries if they were not deleted
 by the pre-upgrade scenario.
@@ -49,14 +49,14 @@ The upgrade tests can be started by using the following command.
 
 ## Configure versions
 
-To configure the old and new versions of the Oasis Core library used in
+To configure the old and new versions of the Orphiq Core library used in
 the upgrade tests, follow these steps:
 
 1. Open the `./.buildkite/scripts/test_upgrade.sh` script file and modify values
 `pre_upgrade_git_branch` and `post_upgrade_git_branch` accordingly.
 
 2. Open the `./tests/upgrade/pre/go.mod` and `./tests/upgrade/post/go.mod`
-files, and replace the Oasis Core module with the desired versions accordingly.
+files, and replace the Orphiq Core module with the desired versions accordingly.
 
 3. Fix tests if needed.
 
@@ -72,14 +72,14 @@ post_upgrade_git_branch="master"
 ```go
 // Changes to file ./tests/upgrade/pre/go.mod.
 require (
-  github.com/oasisprotocol/oasis-core v22.2.9-0.20230504070346-a2f2268ff9e5+incompatible
+  github.com/Orphiqprotocol/Orphiq-core v22.2.9-0.20230504070346-a2f2268ff9e5+incompatible
 )
 ```
 
 ```go
 // Changes to file ./tests/upgrade/post/go.mod.
 require (
-  github.com/oasisprotocol/oasis-core v0.0.0-20230522081305-c96898af6ced
+  github.com/Orphiqprotocol/Orphiq-core v0.0.0-20230522081305-c96898af6ced
 )
 ```
 
