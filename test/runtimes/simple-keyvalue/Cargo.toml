@@ -1,0 +1,39 @@
+[package]
+name = "simple-keyvalue"
+version = "0.0.0"
+authors = ["Oasis Protocol Foundation <info@oasisprotocol.org>"]
+edition = "2018"
+
+[[bin]]
+name = "simple-keyvalue"
+
+[[bin]]
+name = "simple-keyvalue-upgrade"
+bench = false
+test = false
+doc = false
+path = "src/upgraded.rs"
+
+[package.metadata.fortanix-sgx]
+heap-size = 536870912 # 512 MiB
+stack-size = 2097152
+threads = 26
+
+[dependencies]
+cbor = { version = "0.5.1", package = "oasis-cbor" }
+oasis-core-runtime = { path = "../../../runtime" }
+oasis-core-keymanager = { path = "../../../keymanager" }
+simple-keymanager = { path = "../simple-keymanager" }
+
+# Third party.
+anyhow = "1.0"
+thiserror = "1.0"
+byteorder = "1.4.3"
+tokio = { version = "1.44.2", features = ["rt"] }
+
+[features]
+debug-mock-sgx = [
+	"oasis-core-runtime/debug-mock-sgx",
+	"oasis-core-keymanager/debug-mock-sgx",
+	"simple-keymanager/debug-mock-sgx",
+]
