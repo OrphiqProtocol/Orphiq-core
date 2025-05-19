@@ -1,0 +1,30 @@
+[package]
+name = "simple-keymanager"
+version = "0.0.0"
+authors = ["Oasis Protocol Foundation <info@oasisprotocol.org>"]
+edition = "2018"
+
+[[bin]]
+name = "simple-keymanager"
+
+[[bin]]
+name = "simple-keymanager-upgrade"
+bench = false
+test = false
+doc = false
+path = "src/upgraded.rs"
+
+[package.metadata.fortanix-sgx]
+heap-size = 536870912 # 512 MiB
+stack-size = 2097152
+threads = 26
+
+[dependencies]
+oasis-core-runtime = { path = "../../../runtime" }
+oasis-core-keymanager = { path = "../../../keymanager" }
+
+[features]
+debug-mock-sgx = [
+	"oasis-core-runtime/debug-mock-sgx",
+	"oasis-core-keymanager/debug-mock-sgx",
+]
