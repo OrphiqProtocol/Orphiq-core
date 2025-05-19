@@ -1,0 +1,94 @@
+# GoReleaser configuration file.
+#
+# For more info, browse to http://goreleaser.com.
+#
+# NOTE: The GoReleaser is not meant to be run directly, but rather through
+# Make's release-build target.
+
+version: 2
+project_name: Orphiq Core
+
+env:
+  # Require use of Go modules.
+  - GO111MODULE=on
+
+builds:
+  - id: Orphiq-node
+    main: ./Orphiq-node/main.go
+    binary: Orphiq-node
+    dir: go/
+    flags:
+      - -trimpath
+      # Build Orphiq-node with jemalloc tag (used by badgerdb).
+      # TODO: Use 'tags' attribute when GoReleaser is udpated to newer version:
+      # https://github.com/goreleaser/goreleaser/pull/2268
+      - -tags=jemalloc
+    ldflags:
+      # NOTE: At the moment, GoReleaser produces different binaries when
+      # releases are built from different git paths, unless -buildid= is added
+      # to ldflags.
+      # For more details, see: https://github.com/Orphiqlabs/goreleaser/issues/1.
+      - -buildid=
+      - "{{.Env.GOLDFLAGS_VERSION}}"
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+  - id: Orphiq-net-runner
+    main: ./Orphiq-net-runner/net-runner.go
+    binary: Orphiq-net-runner
+    dir: go/
+    flags:
+      - -trimpath
+    ldflags:
+      # NOTE: At the moment, GoReleaser produces different binaries when
+      # releases are built from different git paths, unless -buildid= is added
+      # to ldflags.
+      # For more details, see: https://github.com/Orphiqlabs/goreleaser/issues/1.
+      - -buildid=
+      - "{{.Env.GOLDFLAGS_VERSION}}"
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+  - id: Orphiq-remote-signer
+    main: ./Orphiq-remote-signer/main.go
+    binary: Orphiq-remote-signer
+    dir: go/
+    flags:
+      - -trimpath
+    ldflags:
+      # NOTE: At the moment, GoReleaser produces different binaries when
+      # releases are built from different git paths, unless -buildid= is added
+      # to ldflags.
+      # For more details, see: https://github.com/Orphiqlabs/goreleaser/issues/1.
+      - -buildid=
+      - "{{.Env.GOLDFLAGS_VERSION}}"
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+archives:
+  - name_template: "{{replace .ProjectName \" \" \"_\" | tolower}}_{{.Version}}_{{.Os}}_{{.Arch}}"
+    wrap_in_directory: true
+    files:
+      - CHANGELOG.md
+      - README.md
+      - LICENSE
+      # NOTE: We assume that the Makefile release-build target prepares this binary.
+      - Orphiq-core-runtime-loader
+
+checksum:
+  name_template: SHA256SUMS-{{.Version}}.txt
+  algorithm: sha256
+
+snapshot:
+  version_template: "{{.Version}}-dev"
+
+release:
+  name_template: "{{.ProjectName}} {{.Version}}"
+  prerelease: true
+  make_latest: false
