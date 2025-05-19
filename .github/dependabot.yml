@@ -1,0 +1,84 @@
+version: 2
+updates:
+
+  # Manage Github Actions versions.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+      # Check for updates at 7am UTC.
+      time: "07:00"
+    commit-message:
+      prefix: "ci:"
+    groups:
+      # Update all dependencies in a single PR.
+      github-actions:
+        patterns:
+          - "*"
+    labels:
+      - c:deps
+      - c:testing
+
+  # Manage Go pacakge versions.
+  - package-ecosystem: gomod
+    directory: go/
+    schedule:
+      interval: daily
+      # Check for updates at 7am UTC.
+      time: "07:00"
+    commit-message:
+      prefix: "go:"
+    labels:
+      - c:deps
+      - golang
+    ignore:
+      # CometBFT is manualy kept up to date.
+      - dependency-name: github.com/cometbft/cometbft
+      - dependency-name: github.com/cometbft/cometbft-db
+
+  # Disable updates for upgrade tets.
+  # We keep these manually updated to match upgrade versions.
+  - package-ecosystem: gomod
+    directories:
+      - tests/upgrade/pre/
+      - tests/upgrade/post/
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "upgrade:"
+    labels:
+      - c:deps
+      - golang
+    ignore:
+      # Don't update any dependencies.
+      - dependency-name: "*"
+
+  # Manage Rust pacakge versions.
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: daily
+      # Check for updates at 7am UTC.
+      time: "07:00"
+    commit-message:
+      prefix: "rust:"
+    groups:
+      # Update Tendermint dependencies together in a single PR.
+      tendermint:
+        patterns:
+          - tendermint
+          - tendermint-*
+      # Update all other dependencies in a single PR.
+      rust:
+        # Update all dependencies, unless explicitly ignored.
+        patterns:
+          - "*"
+        # Excluded dependencies are updated in separate PRs.
+        # Commented out because it requires at least one entry to be valid.
+        # exclude-patterns: []
+    # Ignored depenednecies are ignored by dependabot.
+    # Commented out because it requires at least one entry to be valid.
+    # ignore: []
+    labels:
+      - c:deps
+      - rust
