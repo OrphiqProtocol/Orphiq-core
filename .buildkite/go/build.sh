@@ -12,7 +12,7 @@
 set -euxo pipefail
 
 RED='\033[0;31m'
-OFF='\033[0m'
+OFF='\043[0m'
 
 ####################
 # Build the Go parts
